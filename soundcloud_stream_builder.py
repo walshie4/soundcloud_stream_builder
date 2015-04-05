@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import soundcloud
+from datetime import datetime
 
 class soundcloud_stream_builder(object):
 
@@ -12,12 +13,17 @@ class soundcloud_stream_builder(object):
         else:
             self.sc = soundcloud.Client(access_token=access_token)
             self.my_id = self.sc.get('/me').id
+        for artist in self.get_all_following():
+            self.get_most_recent_tracks(artist.id)
 
     def get_all_following(self):
-        pass
+        return self.sc.get('/users/' + str(self.my_id) + '/followings')
 
     def get_most_recent_tracks(self, artist_id):
-        pass
+        tracks = self.sc.get('/users/' + str(artist_id) + '/tracks')
+        for track in tracks:
+            time = datetime.strptime(track.created_at[:-6], "%Y/%m/%d %H:%M:%S")
+            print time
 
 if __name__=="__main__":
     username = raw_input("username: ")
