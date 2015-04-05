@@ -4,8 +4,11 @@ import soundcloud
 
 class soundcloud_stream_builder(object):
 
-    def __init__(self, id_value):
-        self.soundcloud.Client(id_value)
+    def __init__(self, user_id, access_token = None):
+        if access_token is None:
+            self.sc = soundcloud.Client("265aecdf421a49f07a6c7f36a049f1b6")
+        else:
+            self.sc = soundcloud.Client(access_token=access_token)
 
     def get_all_following(self):
         pass
@@ -14,6 +17,6 @@ class soundcloud_stream_builder(object):
         pass
 
 if __init__=="__main__":
-    client_id = int(raw_input("id: "))
-    stream = soundcloud_stream_builder(client_id)
+    user_id = int(raw_input("user id: "))
+    stream = soundcloud_stream_builder(user_id)
 
