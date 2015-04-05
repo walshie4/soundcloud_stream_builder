@@ -13,17 +13,30 @@ class soundcloud_stream_builder(object):
         else:
             self.sc = soundcloud.Client(access_token=access_token)
             self.my_id = self.sc.get('/me').id
+        recent = list()
         for artist in self.get_all_following():
-            self.get_most_recent_tracks(artist.id)
+            recent.extend(self.get_most_recent_tracks(artist.id))
+        recent.sort(key=lambda track: self.sc_timestamp_to_datetime(track.created_at))
+        for track in recent:
+            print track.title
 
     def get_all_following(self):
         return self.sc.get('/users/' + str(self.my_id) + '/followings')
 
-    def get_most_recent_tracks(self, artist_id):
+    def get_most_recent_tracks(self, artist_id, age_to_disqualify=None):
+        if age_to_disqualify is None:
+            age_to_disqualify = 86400#1 day in seconds
         tracks = self.sc.get('/users/' + str(artist_id) + '/tracks')
+        recent = list()
         for track in tracks:
-            time = datetime.strptime(track.created_at[:-6], "%Y/%m/%d %H:%M:%S")
-            print time
+            time = self.sc_timestamp_to_datetime(track.created_at)
+            age = (datetime.now() - time).total_seconds()
+            if age < age_to_disqualify:#include
+                recent.append(track)
+        return recent
+
+    def sc_timestamp_to_datetime(self, timestamp):
+        return datetime.strptime(timestamp[:-6], "%Y/%m/%d %H:%M:%S")
 
 if __name__=="__main__":
     username = raw_input("username: ")
