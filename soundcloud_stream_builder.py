@@ -16,7 +16,7 @@ class soundcloud_stream_builder(object):
     def get_most_recent_tracks(self, artist_id):
         pass
 
-if __init__=="__main__":
+if __name__=="__main__":
     user_id = int(raw_input("user id: "))
     stream = soundcloud_stream_builder(user_id)
 
