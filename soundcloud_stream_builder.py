@@ -2,6 +2,7 @@
 
 import soundcloud
 from datetime import datetime
+import time
 
 class soundcloud_stream_builder(object):
 
@@ -15,6 +16,7 @@ class soundcloud_stream_builder(object):
             self.my_id = self.sc.get('/me').id
         recent = list()
         for artist in self.get_all_following():
+            print artist.username
             recent.extend(self.get_most_recent_tracks(artist.id))
         recent.sort(key=lambda track: self.sc_timestamp_to_datetime(track.created_at))
         for track in recent:
@@ -40,5 +42,8 @@ class soundcloud_stream_builder(object):
 
 if __name__=="__main__":
     username = raw_input("username: ")
+    start = time.clock()
+    print "building playlist for " + username + "..."
     stream = soundcloud_stream_builder(username)
+    print "stream built in " + str(time.clock() - start) + " seconds"
 
